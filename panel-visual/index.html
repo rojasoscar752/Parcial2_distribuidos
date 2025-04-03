@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel-visual</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 60%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Estado de los Contenedores</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Servicio</th>
+                <th>Reportes</th>
+            </tr>
+        </thead>
+        <tbody id="status-table">
+            <tr><td colspan="2">Cargando...</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Cliente App</h2>
+    <p id="client-status">Registrando instancia...</p>
+
+    <script>
+        const API_URL = "/reporte"; // Ajuste para que funcione con Traefik
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${API_URL}/estado`, {
+                    headers: {
+                        'Authorization': 'Basic ' + btoa('admin:secret')
+                    }
+                });
+                const data = await response.json();
+                const tableBody = document.getElementById("status-table");
+                
+                tableBody.innerHTML = Object.entries(data.servicios).map(([servicio, registros]) => 
+                    `<tr><td>${servicio}</td><td>${registros}</td></tr>`
+                ).join("") || '<tr><td colspan="2">Sin registros</td></tr>';
+            } catch (error) {
+                console.error("Error obteniendo estado:", error);
+            }
+        }
+
+        async function registerClient() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Service-ID": "Oscar Rojas",
+                        'Authorization': 'Basic ' + btoa('admin:secret')
+                    },
+                    body: JSON.stringify({})
+                });
+                const data = await response.json();
+                document.getElementById("client-status").textContent = `Registro exitoso: ${JSON.stringify(data)}`;
+            } catch (error) {
+                console.error("Error en registro de cliente:", error);
+                document.getElementById("client-status").textContent = "Error en registro de cliente";
+            }
+        }
+
+        setInterval(fetchStatus, 5000);
+        setInterval(registerClient, 5000);
+        fetchStatus();
+        registerClient();
+    </script>
+</body>
+</html>
