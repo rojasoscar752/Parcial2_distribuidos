@@ -4,8 +4,10 @@
 Se corren las 3 instancias de CLient_service_x cada 5 segundos
 Se hace la petición al panel visual llamado /panel parra ver el servicio y los reportes
 curl -I http://localhost/panel
+htto://localhost:3001/
 
 #Configuración del servicio-analitica
+http://localhost:3000/reporte
 
 
 #Configuración del panel-visual
