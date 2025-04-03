@@ -82,10 +82,10 @@ services:
     build: ./panel-visual
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.panel-visual.rule=PathPrefix(`/monitor`)"
+      - "traefik.http.routers.panel-visual.rule=PathPrefix(`/panel`)"
       - "traefik.http.routers.panel-visual.entrypoints=web"
-      - "traefik.http.routers.panel-visual.middlewares=strip-monitor"
-      - "traefik.http.middlewares.strip-monitor.stripprefix.prefixes=/monitor"
+      - "traefik.http.routers.panel-visual.middlewares=strip-panel"
+      - "traefik.http.middlewares.strip-panel.stripprefix.prefixes=/panel"
       - "traefik.http.services.panel-visual.loadbalancer.server.port=80"
     networks:
       - traefik_network
